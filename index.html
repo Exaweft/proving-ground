@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>User guide · Proving Ground</title>
+<meta name="description" content="Proving Ground for Unity 6: live gameplay tuning, diagnostics and run comparison, by Exaweft.">
+<style>
+:root { --bg:#ffffff; --surface:#f4f7f9; --text:#16212b; --muted:#566673; --border:#d9e2e8; --accent:#0f8a66;
+  --code-bg:#f0f4f7; --pre-bg:#111f2b; --pre-text:#e6edf3; }
+@media (prefers-color-scheme: dark) { :root { --bg:#0b151f; --surface:#111f2b; --text:#e6edf3; --muted:#9db0bb;
+  --border:#26394a; --accent:#56e4b1; --code-bg:#172a3a; --pre-bg:#111f2b; --pre-text:#e6edf3; } }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+header { border-bottom:1px solid var(--border); background:var(--surface); }
+.bar { max-width:1180px; margin:0 auto; padding:12px 16px; display:flex; flex-wrap:wrap; gap:8px 24px; align-items:baseline; }
+.brand { font-weight:700; color:var(--accent); text-decoration:none; font-size:18px; }
+.brand span { color:var(--muted); font-weight:400; font-size:14px; margin-left:6px; }
+nav.top a { color:var(--text); text-decoration:none; margin-right:16px; }
+nav.top a[aria-current] { color:var(--accent); font-weight:600; }
+.layout { max-width:1180px; margin:0 auto; padding:0 16px; display:grid; grid-template-columns:240px minmax(0,1fr); gap:40px; }
+aside { position:sticky; top:0; align-self:start; max-height:100vh; overflow:auto; padding:24px 0; font-size:14px; }
+aside a { display:block; color:var(--muted); text-decoration:none; padding:3px 0; }
+aside a:hover { color:var(--accent); }
+main { padding:8px 0 64px; min-width:0; }
+h1 { font-size:32px; line-height:1.2; margin:28px 0 16px; }
+h2 { font-size:24px; margin:40px 0 12px; padding-top:8px; border-top:1px solid var(--border); }
+h3 { font-size:19px; margin:28px 0 8px; }
+a { color:var(--accent); }
+code { font:14px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; background:var(--code-bg); padding:1px 5px; border-radius:4px; }
+pre { background:var(--pre-bg); color:var(--pre-text); padding:14px 16px; border-radius:6px; overflow-x:auto; }
+pre code { background:none; padding:0; color:inherit; }
+.table { overflow-x:auto; margin:16px 0; }
+table { border-collapse:collapse; width:100%; font-size:15px; }
+th, td { text-align:left; vertical-align:top; padding:7px 10px; border-bottom:1px solid var(--border); }
+th { background:var(--surface); }
+li { margin:4px 0; }
+footer { color:var(--muted); font-size:13px; border-top:1px solid var(--border); padding:16px 0; margin-top:48px; }
+@media (max-width:820px) { .layout { grid-template-columns:1fr; gap:0; } aside { position:static; max-height:none; padding:12px 0 0; } }
+</style>
+</head>
+<body>
+<header><div class="bar"><a class="brand" href="index.html">Proving Ground<span>1.0.0 · Exaweft</span></a>
+<nav class="top"><a href="index.html" aria-current="page">User guide</a><a href="api.html">API overview</a><a href="changelog.html">Changelog</a></nav></div></header>
+<div class="layout">
+<aside aria-label="On this page"><a href="#1-quick-start">1. Quick start</a>
+<a href="#2-tuning-values-with-tune-and-registration">2. Tuning values with <code>[Tune]</code> and registration</a>
+<a href="#3-presets">3. Presets</a>
+<a href="#4-the-f1-panel-hotkeys-layout-and-debugaction-buttons">4. The F1 panel: hotkeys, layout and <code>[DebugAction]</code> buttons</a>
+<a href="#5-diagnostics-diag-event-diag-count-diag-timer-performance-and-logs">5. Diagnostics: <code>Diag.Event</code>, <code>Diag.Count</code>, <code>Diag.Timer</code>, performance and logs</a>
+<a href="#6-run-records-and-comparison">6. Run records and comparison</a>
+<a href="#7-scripted-runs">7. Scripted runs</a>
+<a href="#8-keeping-game-input-away-from-the-panels">8. Keeping game input away from the panels</a>
+<a href="#9-release-builds-and-performance">9. Release builds and performance</a>
+<a href="#10-what-has-been-tested">10. What has been tested</a>
+<a href="#11-known-limitations">11. Known limitations</a>
+<a href="#12-the-basics-sample-and-the-package-s-tests">12. The Basics sample and the package's tests</a></aside>
+<main>
+<h1 id="proving-ground-user-guide">Proving Ground user guide</h1>
+<p>Proving Ground lets you tune gameplay values while the game runs, keep the numbers you like as presets, and record runs so you can compare which settings played best. It works in the Editor's Play Mode and in development builds, and is off in release builds.</p>
+<ol>
+<li>Quick start: a working panel in about five minutes</li>
+<li>Tuning values with <code>[Tune]</code> and registration</li>
+<li>Presets</li>
+<li>The F1 panel: hotkeys, layout and <code>[DebugAction]</code> buttons</li>
+<li>Diagnostics: <code>Diag.Event</code>, <code>Diag.Count</code>, <code>Diag.Timer</code>, performance and logs</li>
+<li>Run records and comparison</li>
+<li>Scripted runs</li>
+<li>Keeping game input away from the panels</li>
+<li>Release builds and performance</li>
+<li>What has been tested</li>
+<li>Known limitations</li>
+<li>The Basics sample and the package's tests</li>
+</ol>
+<h2 id="1-quick-start">1. Quick start</h2>
+<ol>
+<li><strong>Install.</strong> Import the package, then check the Console is free of errors. It needs Unity 6 and no other packages.</li>
+<li><p><strong>Mark some values.</strong> On any component, add <code>using Exaweft.Proving;</code>, put <code>[Tune]</code> on the fields you want to tune, and register the component while it is enabled:</p>
+<pre><code class="language-csharp">using Exaweft.Proving;
+using UnityEngine;
+
+public class PlayerMovement : MonoBehaviour
+{
+    [Tune(&quot;Movement&quot;, 1, 18, hint: &quot;units/s&quot;)] public float speed = 10f;
+    [Tune(&quot;Movement&quot;, 0, 3)] public int extraJumps = 1;
+    [Tune(&quot;Cheats&quot;)] public bool godMode;
+
+    void OnEnable()  =&gt; ProvingGround.Register(this);
+    void OnDisable() =&gt; ProvingGround.Unregister(this);
+}</code></pre></li>
+</ol>
+<ol>
+<li><strong>Tune.</strong> Press Play, then <strong>F1</strong>. Your values appear under &quot;Movement&quot; and &quot;Cheats&quot;. Drag a slider and the game changes at once. Type a name under Presets and press <strong>Save</strong> to keep the values.</li>
+<li><strong>See what happened.</strong> Press <strong>F2</strong> for performance, counters, timers and events. Add your own anywhere: <code>Diag.Count(&quot;Jumps&quot;);</code>, <code>Diag.Event(&quot;Boss phase 2&quot;);</code>.</li>
+<li><strong>Compare.</strong> Type a label in F2's Run section and press <strong>Start run</strong>; play; press <strong>End</strong>. Do the same with other settings and a different label, then press <strong>Compare runs…</strong> to see them side by side.</li>
+</ol>
+<p>Changes made in Play Mode go when Play Mode ends, as usual in Unity (ScriptableObject assets included, see section 2). Save a preset to keep them, and copy the numbers you settle on into your scenes or assets.</p>
+<p>To see all of this working before touching your own game, import the <strong>Basics</strong> sample (section 12).</p>
+<h2 id="2-tuning-values-with-tune-and-registration">2. Tuning values with <code>[Tune]</code> and registration</h2>
+<p>Mark fields with <code>[Tune]</code> and register the object. Supported types are <code>float</code>, <code>int</code>, <code>bool</code> and enums (not <code>[Flags]</code> enums). Fields may be public or private, but not <code>static</code> or <code>readonly</code>. Auto-properties work with <code>[field: Tune]</code>, as long as they have a setter (a private one is fine); they appear under the property name. Values grouped in a struct or class, such as a <code>Stats</code> struct, are reached by marking both the field that holds it and the fields inside it (see &quot;Values inside a struct or class&quot; below).</p>
+<pre><code class="language-csharp">public class PlayerMovement : MonoBehaviour
+{
+    [Tune(&quot;Movement&quot;, 1, 18, step: 0.5f, hint: &quot;units/s&quot;)]
+    public float speed = 10f;
+
+    [Tune(&quot;Movement&quot;, 0, 3)]
+    public int extraJumps = 1;
+
+    [Tune(&quot;Cheats&quot;)]
+    public bool godMode;
+
+    void OnEnable()  =&gt; ProvingGround.Register(this);
+    void OnDisable() =&gt; ProvingGround.Unregister(this);
+}</code></pre>
+<ul>
+<li><strong>Group, label and hint.</strong> The first argument is the panel group (<code>&quot;General&quot;</code> if left out). The label is made from the field name (<code>extraJumps</code> becomes &quot;Extra jumps&quot;) unless you pass <code>label:</code>.</li>
+<li><strong>Range and step.</strong> Values set from the panel, a preset or code are clamped to the range given by min and max. Ints keep to whole numbers inside it. The step is used by the −/+ buttons and slider snapping; leave it out and it is 1 for ints and a hundredth of the range for floats. Not-a-number and infinite values are replaced by the default.</li>
+<li><strong>Defaults.</strong> The value a field holds when its object is first registered is its default, and Reset returns to it.</li>
+<li><strong>Starting values outside the range.</strong> If a field starts outside its range (or at infinity, or NaN), Proving Ground leaves it exactly as your game set it and logs one warning naming the field, its value and the range. The slider shows the nearer end; Reset returns to your value; anything set from the panel stays within the range. Widen the range, or fix the starting value, to make the warning go. An enum holding a value that isn't one of its members can't be shown, so it becomes the first member, also with a warning.</li>
+<li><strong>Shared values.</strong> Every registered object of a type shares one value per field: changing the speed changes it on every registered <code>PlayerMovement</code>, and one registered later starts with the current value.</li>
+<li><strong>Values of its own.</strong> To tune one object apart from the others of its type, such as one of two spawners, register it with a scope name: <code>ProvingGround.Register(this, &quot;Left spawner&quot;)</code>. Objects with the same scope share values; the panel shows each scope as its own group (&quot;Spawner · Left spawner&quot;), and presets keep its values under the name, so use one that stays the same between sessions. <code>[DebugAction]</code> buttons in a scoped group run on that scope only.</li>
+<li><strong>Remembered values.</strong> When the last object with a field unregisters, its value is remembered and given to the next object that registers, such as after a scene reload. A new Play session starts afresh.</li>
+<li><strong>Any class.</strong> <code>Register</code> accepts ScriptableObjects and plain C# objects as well as components. Registration is explicit; Proving Ground never scans your scenes.</li>
+<li><strong>Assets are put back.</strong> Unity throws away changes to scene objects when Play Mode ends, but not changes to assets. So that tuning a ScriptableObject asset (an item, a building, an enemy type) never leaves it changed, Proving Ground puts each asset's tuned fields back to the values they had before it registered, once the Editor is back in Edit Mode. To keep values you like, save a preset. Fields without <code>[Tune]</code> are left as they are.</li>
+<li><strong>Values your game copies.</strong> Proving Ground changes the field. If your game copies the field somewhere else once, such as into a private variable in <code>Awake</code> or into a physics component at start-up, changing the field does nothing until the game reads it again. Tune the field the game reads while playing, or reapply the value when it changes (see <code>ValueChanged</code> below).</li>
+</ul>
+<h3 id="values-inside-a-struct-or-class">Values inside a struct or class</h3>
+<p>Mark the field that holds the struct or class, and each field inside it you want to tune:</p>
+<pre><code class="language-csharp">public class Kart : MonoBehaviour
+{
+    [Tune(&quot;Handling&quot;)]
+    public Stats stats = new Stats { topSpeed = 10f, grip = 0.95f };
+
+    [System.Serializable]
+    public struct Stats
+    {
+        [Tune(null, 1, 30, hint: &quot;m/s&quot;)] public float topSpeed;
+        [Tune(null, 0, 1)] public float grip;
+    }
+
+    void OnEnable() =&gt; ProvingGround.Register(this);
+    void OnDisable() =&gt; ProvingGround.Unregister(this);
+}</code></pre>
+<ul>
+<li><strong>Group and label.</strong> A field inside uses its own group, or else the group given on the field that holds it. A <code>label:</code> on the holding field is put in front of each label inside (&quot;Boost · Top speed&quot;), which tells apart two fields of the same type.</li>
+<li><strong>Keys.</strong> Presets and run records name the value through the holding field: <code>Kart.stats.topSpeed</code>.</li>
+<li><strong>Structs</strong> are changed by copying, changing and storing back the whole struct, so code holding its own copy of the struct won't see the change; read it from the field. <strong>Classes</strong> are changed in place. A class that is null reads as zero and ignores changes, with a warning, until it exists; fields serialized by Unity are never null.</li>
+<li><strong>Depth.</strong> Up to four structs or classes deep. Unity objects, collections (arrays and lists) and strings can't hold tuned values.</li>
+</ul>
+<p>Fields that can't be tuned are skipped with a warning in the Console naming the field and the reason.</p>
+<p>From code, <code>ProvingGround.Tuning</code> lists every value (<code>Values</code>, <code>Find(key)</code>) and resets them (<code>ResetAll</code>, <code>ResetGroup</code>, or <code>Reset</code> on one value). Its <code>ValueChanged</code> event reports changes made through Proving Ground:</p>
+<pre><code class="language-csharp">ProvingGround.Tuning.ValueChanged += value =&gt;
+{
+    if (value.Key == &quot;MyGame.Player.gravityScale&quot;) body.gravityScale = (float)value.Value;
+};</code></pre>
+<h2 id="3-presets">3. Presets</h2>
+<p><code>ProvingGround.Presets</code> saves and loads named sets of values as JSON files:</p>
+<pre><code class="language-csharp">ProvingGround.Presets.Save(&quot;Fast enemies&quot;, out string message);
+ProvingGround.Presets.Load(&quot;Fast enemies&quot;, out message);
+IReadOnlyList&lt;string&gt; names = ProvingGround.Presets.List();</code></pre>
+<ul>
+<li>Files go to <code>ProvingGround/Presets</code> under <code>Application.persistentDataPath</code>. Set <code>Presets.Directory</code> to keep them somewhere else, such as a project folder under source control.</li>
+<li>Names may use letters, digits, spaces, hyphens and underscores, up to 64 characters.</li>
+<li>Loading sets every value in the file and returns values the file doesn't mention to their defaults, so a preset always gives the same result. Values for objects that haven't registered yet are applied when they do.</li>
+<li>A save writes a temporary file first, so a failed save leaves the previous preset intact. Damaged, oversized or unrecognised files are refused without changing anything, and each call returns a message saying what happened.</li>
+</ul>
+<h2 id="4-the-f1-panel-hotkeys-layout-and-debugaction-buttons">4. The F1 panel: hotkeys, layout and <code>[DebugAction]</code> buttons</h2>
+<p>In the Editor and in development builds, press <strong>F1</strong> in Play Mode to show or hide the panel. It lists every registered value by group, with the group's <code>[DebugAction]</code> buttons at the top.</p>
+<ul>
+<li><strong>Rows.</strong> Numbers with a range have −, a slider, + and a box for an exact number (Enter commits it; a value outside the range is clamped and the status line says so). The slider and the −/+ buttons snap to the step. Numbers without a range drop the slider. Bools show an On/Off button; enums step through their names. A value that differs from its default shows its name in amber, and its Reset button returns it.</li>
+<li><strong>Groups and search.</strong> Click a group's heading to collapse it. The search box filters by name, hint and group; the × inside it (and inside the other text boxes) clears it.</li>
+<li><strong>Placement and size.</strong> Left, Right and Float choose where the panel sits; drag a floating panel by its title. A− and A+ change its size. Until you press them, the panels start at their designed size on screens up to 1080 pixels high and larger in proportion above that (twice the size at 2160). These choices, and collapsed groups, are remembered in <code>PlayerPrefs</code>.</li>
+<li><strong>Presets.</strong> Type or pick a name, then Save, Load or Delete (Delete asks for a second press).</li>
+</ul>
+<pre><code class="language-csharp">public class Player : MonoBehaviour
+{
+    [DebugAction(&quot;Testing&quot;, &quot;Restore health&quot;, hint: &quot;fills shield and hull&quot;)]
+    void RestoreHealth() { /* game code */ }
+
+    void OnEnable()  =&gt; ProvingGround.Register(this);
+    void OnDisable() =&gt; ProvingGround.Unregister(this);
+}</code></pre>
+<p><code>[DebugAction]</code> methods take no parameters and may be private. A button runs its method on every registered object that has it; an exception is logged to the Console and reported on the status line.</p>
+<p>From code:</p>
+<pre><code class="language-csharp">ProvingGround.Panel.ToggleKey = KeyCode.BackQuote;   // KeyCode.None turns the hotkey off
+ProvingGround.Panel.Title = &quot;My Game&quot;;
+ProvingGround.Panel.Open();</code></pre>
+<p><strong>Default placement.</strong> If your game's own HUD sits where the panels would, choose their starting sides from code, for example in a bootstrap component's <code>Awake</code>:</p>
+<pre><code class="language-csharp">ProvingGround.Panel.DefaultPlacement = PanelPlacement.Right;
+ProvingGround.DiagnosticsPanel.DefaultPlacement = DiagnosticsPlacement.Right;  // F2 beside F1, both on the right</code></pre>
+<p>A default applies until someone picks a placement with the panel's buttons (or you set <code>Placement</code>); the pick is remembered and wins from then on. <code>ForgetPlacement()</code> returns a panel to its default. The F2 panel's own buttons are <strong>Auto</strong> (opposite the F1 panel, the default), <strong>Left</strong> and <strong>Right</strong>. When both panels are docked on the same side and open, F2 sits beside F1 instead of on top of it.</p>
+<p>The panels are UI Toolkit, and Unity always draws <code>OnGUI</code> (IMGUI) on top of UI Toolkit, so a game's own <code>OnGUI</code> text shows through them. Skip it while a panel is open if it gets in the way, for example <code>if (ProvingGround.DiagnosticsPanel.IsComparisonOpen) return;</code> at the start of <code>OnGUI</code>.</p>
+<p>The hotkey works with the Input System package and with the legacy Input Manager. Function keys stay live while typing; other hotkeys are ignored then so they can be typed. Esc ends typing in a panel box.</p>
+<p>The panel draws on its own UI Toolkit panel settings above the game's UI, with no style sheets or fonts of its own (it uses Unity's built-in runtime font), so it doesn't affect the game's UI. Nothing is built until the panel is first opened.</p>
+<h2 id="5-diagnostics-diag-event-diag-count-diag-timer-performance-and-logs">5. Diagnostics: <code>Diag.Event</code>, <code>Diag.Count</code>, <code>Diag.Timer</code>, performance and logs</h2>
+<p>Record what happens from anywhere in game code. Press <strong>F2</strong> in Play Mode to see it live.</p>
+<pre><code class="language-csharp">using Exaweft.Proving;
+
+Diag.Event(&quot;Boss phase 2&quot;);            // timestamped, shown in recent events and written to the log
+Diag.Count(&quot;Deaths&quot;);                  // counters add up; Diag.Count(&quot;Coins&quot;, 5) adds 5
+using (Diag.Timer(&quot;Path search&quot;))      // times the work inside the block
+{
+    FindPath();
+}
+
+// A span across frames, such as a lap: keep the timer and dispose it when the span ends.
+DiagTimer lap = Diag.Timer(&quot;Lap&quot;);
+// ... later
+lap.Dispose();</code></pre>
+<ul>
+<li><strong>Cost.</strong> Counting and timing don't allocate after a name's first use, so they can run every frame. Events are written to the log, so keep them to things worth reading later. In release builds every call returns at once.</li>
+<li><strong>The F2 panel</strong> docks opposite the F1 panel by default (see section 4 to change it) and shares its size. It shows live and session frame rate, frame times (mean, 95th percentile, longest), memory and garbage collections, then counters, timers and the latest 32 events, newest first. A gap of over a second between frames (the Editor in the background, a breakpoint, a stalled load) is counted as a pause and kept out of the frame times; the summary lists pauses separately. <strong>Copy summary</strong> puts a readable report on the clipboard; <strong>Open logs</strong> opens the log folder.</li>
+<li><strong>Logs.</strong> One readable text file per Play session (or per run of a development build), opened the first time something is recorded, so a session that records nothing leaves no file. It starts with the build, platform and hardware, lists events, tuning changes made through Proving Ground (one line per value once it has gone a second without changing, with its final value and the time of the last change, so a slider drag is one line), preset loads, scene loads and run starts and ends, and closes with the same summary as Copy summary. Each file is capped at 2 MB, with room always kept for the summary, and the newest 20 files per game are kept.</li>
+<li><strong>Where.</strong> <code>ProvingGround/Logs/Playtest</code> under <code>Application.persistentDataPath</code>. Automated runs go to <code>ProvingGround/Logs/Automated</code> instead, so test bots can't rotate playtest logs away. A run counts as automated in batch-mode Unity, with the <code>-provingground-automated</code> command-line argument, or after <code>Diag.MarkAutomated(true)</code>. Change the folder with <code>ProvingGround.Diagnostics.LogDirectory</code> and the file-name prefix (the product name by default) with <code>LogFilePrefix</code>, before the first diagnostics call.</li>
+</ul>
+<p>From code, <code>ProvingGround.Diagnostics</code> gives the same data: <code>Counters</code>, <code>Timers</code>, <code>RecentEvents</code>, <code>Performance</code>, <code>Summary()</code>, <code>CopySummary()</code>, <code>OpenLogFolder()</code>, <code>LogFile</code> and <code>LogStatus</code>. <code>ProvingGround.DiagnosticsPanel</code> has <code>ToggleKey</code> (F2), <code>Open</code>, <code>Close</code>, <code>Toggle</code>, <code>IsOpen</code> and the placement settings above.</p>
+<h2 id="6-run-records-and-comparison">6. Run records and comparison</h2>
+<p>A run is a stretch of play with a label: one attempt at a level, one lap, one bot round. When it ends, Proving Ground saves a run record linking the exact settings it started with to what happened, so you can see which settings played best.</p>
+<pre><code class="language-csharp">ProvingGround.Runs.Start(&quot;Evade&quot;);                    // label: runs are grouped by it when compared
+ProvingGround.Runs.Start(&quot;Fast&quot;, preset: &quot;Fast&quot;);     // load a preset first, so the run starts with exactly its values
+ProvingGround.Runs.End(&quot;player destroyed&quot;);           // the outcome, saved with the record</code></pre>
+<ul>
+<li><strong>Starting a run.</strong> From code as above; from the F2 panel (type a label in the Run section and press <strong>Start run</strong> or Enter); or on every scene load, with <code>ProvingGround.Runs.AutoStartOnSceneLoad = true</code> (set it in <code>Awake</code>; the run is labelled with the scene's name). Starting a run ends the one before it, and the end of Play Mode (or the build quitting) ends the last one. If a preset can't be loaded, the run doesn't start and the Console says why, so a bot never records a run with the wrong settings.</li>
+<li><strong>What a record holds.</strong> Run ID, label, batch, preset (marked &quot;modified&quot; if values changed after it was loaded), how the run started and why it ended; every setting at the start and at the end; settled changes during the run (one per value, as in the log) and preset loads; counters, timers and up to 200 events from the run alone; its duration and frame rate; and the build, Unity version, platform and scene. Times are seconds since the run started. <code>Diag</code> calls don't change: while a run is going, what they record counts for the run as well as the session.</li>
+<li><strong>Batches.</strong> <code>Runs.BeginBatch(&quot;Jump test&quot;)</code> tags every run started until <code>Runs.EndBatch()</code>, so a bot's runs can be found together (section 7).</li>
+<li><strong>Comparing.</strong> In F2, press <strong>Compare runs…</strong>. Saved runs are listed newest first; click runs to select them, or press <strong>Latest batch</strong> (from code, <code>ProvingGround.DiagnosticsPanel.OpenComparison(selectLatestBatch: true)</code> opens it with the latest batch selected, which is handy at the end of a scripted batch). Selected runs are grouped by label, one column per label, showing the number of runs, duration, each counter and timer (the mean per run with the range in brackets; a counter a run never used counts as 0), frame rate and frame times, then only the settings that differ between groups (or within one, as &quot;mixed&quot;). <strong>Copy comparison</strong> copies it as aligned text. The screen's own A− and A+ change only its text size (75% to 200%, remembered, and on top of the F1 panel's size); <code>ProvingGround.DiagnosticsPanel.ComparisonTextSize</code> sets it from code. <code>RunComparison.Compare(records)</code> gives the same rows, and <code>ToText()</code> the same text.</li>
+<li><strong>Reading a comparison.</strong> It shows each group's mean and range, not run-by-run differences, and it doesn't test whether a difference is real or chance. With a handful of runs, look at the ranges: if they overlap, play more runs before deciding. To compare settings round by round (the same level seed under two presets, say), the run records have what you need: <code>ProvingGround.Runs.LoadAll()</code> gives every record, and each one's label, batch, counters and duration.</li>
+<li><strong>Files.</strong> One JSON file per run, in <code>ProvingGround/Runs/Playtest</code> or <code>…/Automated</code> under <code>Application.persistentDataPath</code> (by the same rule as the logs). The newest 500 per game are kept in each folder. Change the folder with <code>ProvingGround.Runs.Directory</code>. <code>ProvingGround.Runs.LoadAll()</code> reads them back, newest first, skipping damaged files; the format is documented on <code>RunRecord</code> and carries a version number.</li>
+</ul>
+<h2 id="7-scripted-runs">7. Scripted runs</h2>
+<p>Runs can be driven entirely from code: a test script plays the same round several times under each of a few presets, and the comparison shows how the presets did. The script plays the game; Proving Ground loads the presets, records each round and compares them. Proving Ground doesn't include bots or strategies; the script that plays your game is yours, because only your game knows what &quot;playing&quot; means.</p>
+<p>The Basics sample (section 12) includes <code>RunBatch</code>, a short, reusable coroutine for this. Copy it into your project:</p>
+<pre><code class="language-csharp">// Three rounds under each preset, alternating presets; each round is a run labelled with its preset.
+StartCoroutine(RunBatch.Play(&quot;Jump test&quot;, new[] { &quot;Low jump&quot;, &quot;High jump&quot; }, 3, PlayOneRound));
+
+IEnumerator PlayOneRound(RunBatch.Round round)
+{
+    var random = new System.Random(round.Seed);      // the same seed for every preset in this round
+    ResetLevel(random);
+    yield return new WaitUntil(() =&gt; levelFinished);
+    round.Outcome = playerWon ? &quot;won&quot; : &quot;lost&quot;;        // saved with the run
+}</code></pre>
+<p>Without the helper, the same thing is a few lines:</p>
+<pre><code class="language-csharp">ProvingGround.Runs.BeginBatch(&quot;Jump test&quot;);
+foreach (string preset in new[] { &quot;Low jump&quot;, &quot;High jump&quot; })
+    for (int i = 0; i &lt; 5; i++)
+    {
+        ProvingGround.Runs.Start(label: preset, preset: preset);
+        yield return PlayOneRound();
+        ProvingGround.Runs.End(&quot;round over&quot;);
+    }
+ProvingGround.Runs.EndBatch();
+ProvingGround.DiagnosticsPanel.OpenComparison(selectLatestBatch: true);   // show the result</code></pre>
+<p>What makes scripted runs worth comparing:</p>
+<ul>
+<li><strong>Make rounds repeatable.</strong> Give each round number a seed and use it for anything random, so every preset meets the same conditions and only the settings differ. Simulating in fixed steps rather than per frame, as the sample's runner does, keeps results the same at any frame rate.</li>
+<li><strong>Let the script make mistakes.</strong> A perfect script only shows differences in speed. To compare how settings feel (handling, difficulty), have it react late or imprecisely, the same way for every preset.</li>
+<li><strong>Count what matters.</strong> <code>Diag.Count(&quot;Stumbles&quot;)</code> or <code>Diag.Count(&quot;Hits taken&quot;)</code> inside the round puts a column in the comparison, which often explains why one preset was slower.</li>
+<li><strong>Run batch-mode tests from the command line.</strong> In batch-mode Unity, runs and logs go to the <code>Automated</code> folders, so they never push playtest records out.</li>
+</ul>
+<h2 id="8-keeping-game-input-away-from-the-panels">8. Keeping game input away from the panels</h2>
+<p>The panels can be clicked and typed into while the game is running, so a game may need to ignore input meant for them. Proving Ground never reads or blocks your game's input itself; these properties tell your code when to:</p>
+<div class="table"><table><thead><tr><th>Property</th><th>True while</th></tr></thead><tbody>
+<tr><td><code>ProvingGround.IsPointerOverPanels</code></td><td>the pointer is over either panel or the comparison</td></tr>
+<tr><td><code>ProvingGround.Panel.IsTyping</code></td><td>a Proving Ground text box (search, a number, a preset name, a run label) has the keyboard</td></tr>
+<tr><td><code>ProvingGround.Panel.IsOpen</code>, <code>ProvingGround.DiagnosticsPanel.IsOpen</code>, <code>IsComparisonOpen</code></td><td>that panel is shown</td></tr>
+</tbody></table></div>
+<p><strong>Clicks.</strong> Ignore a click or tap that lands on a panel:</p>
+<pre><code class="language-csharp">if (Input.GetMouseButtonDown(0) &amp;&amp; !ProvingGround.IsPointerOverPanels) Shoot();          // Input Manager
+if (Mouse.current.leftButton.wasPressedThisFrame &amp;&amp; !ProvingGround.IsPointerOverPanels) Shoot();  // Input System</code></pre>
+<p><strong>The scroll wheel.</strong> Scrolling a panel's list also turns the mouse wheel your camera may be reading:</p>
+<pre><code class="language-csharp">float zoom = ProvingGround.IsPointerOverPanels ? 0f : Input.GetAxis(&quot;Mouse ScrollWheel&quot;);</code></pre>
+<p><strong>Keyboard.</strong> Typing &quot;12&quot; into a number box would also press 1 and 2 in your game. Skip gameplay keys while typing:</p>
+<pre><code class="language-csharp">if (!ProvingGround.Panel.IsTyping &amp;&amp; Input.GetKeyDown(KeyCode.Alpha1)) SelectWeapon(1);</code></pre>
+<p>With the Input System and actions, the simplest way is to switch your gameplay action map off while typing:</p>
+<pre><code class="language-csharp">void Update()
+{
+    bool typing = ProvingGround.Panel.IsTyping;
+    if (typing &amp;&amp; gameplay.enabled) gameplay.Disable();
+    else if (!typing &amp;&amp; !gameplay.enabled) gameplay.Enable();
+}</code></pre>
+<p>Clicking in the game, or pressing Esc, ends typing.</p>
+<p><strong>A locked cursor.</strong> Games with mouse look usually lock and hide the cursor, which leaves the panels unclickable. Either let Proving Ground free it while a panel is open:</p>
+<pre><code class="language-csharp">ProvingGround.FreeCursorWhileOpen = true;   // set it at startup, for example in Awake</code></pre>
+<p>It frees the cursor when the first panel opens and puts back how it was when the last one closes, unless your game changed the cursor meanwhile, in which case your game's setting stands. It acts only as panels open and close, so a game that locks the cursor every frame, or on any click, still needs its own check:</p>
+<pre><code class="language-csharp">bool panels = ProvingGround.Panel.IsOpen || ProvingGround.DiagnosticsPanel.IsOpen;
+if (!panels &amp;&amp; Input.GetMouseButtonDown(0)) Cursor.lockState = CursorLockMode.Locked;</code></pre>
+<p>Also skip mouse look while a panel is open, or the view turns as you drag a slider.</p>
+<p><strong>UI navigation.</strong> With an EventSystem in the scene, the arrow keys and WASD move UI focus; Proving Ground stops them moving focus into its own text boxes, so they keep driving your game.</p>
+<h2 id="9-release-builds-and-performance">9. Release builds and performance</h2>
+<p>Proving Ground is on in the Editor and in development builds (<strong>Development Build</strong> ticked in the build profile) and off in every other build. <code>ProvingGround.IsEnabled</code> says which. Off means the API is still there, so game code compiles and runs unchanged, but nothing happens:</p>
+<ul>
+<li><code>ProvingGround.Register</code> returns 0 without looking at the object;</li>
+<li>the panels don't open and nothing listens for F1 or F2 (there is no panel object at all, so no per-frame work);</li>
+<li><code>Diag</code> calls return at once, and runs don't start;</li>
+<li>presets list as empty, and Save, Load and Delete return false;</li>
+<li>nothing is written: no logs, run records, presets or <code>PlayerPrefs</code>.</li>
+</ul>
+<p>Opening a panel while it's off logs one line saying why, once per session.</p>
+<p><strong>Playtest builds.</strong> To keep Proving Ground in a build that isn't a development build, such as one sent to testers, add <code>PROVING_GROUND_PLAYTEST</code> to that build profile's <strong>Scripting Define Symbols</strong> (Player settings, or the profile's own settings in Unity 6 Build Profiles). Make a separate profile for it so the release profile stays clean. <code>PROVING_GROUND_OFF</code> turns it off everywhere, including the Editor and development builds; it wins over the playtest define. Builds you send to testers are unsigned, like any Unity build, and some antivirus programs flag unsigned programs they haven't seen before; that applies to the build as a whole, not to Proving Ground.</p>
+<p><strong>Cost while the panels are closed.</strong> Using Proving Ground the usual way (registered values, a counter and a timer every frame), development and playtest builds allocated nothing over 600 frames with the panels closed, and release builds allocated nothing either. <code>Diag.Event</code> writes to the log, so keep events to things worth reading rather than calling it every frame.</p>
+<p><strong>Code stripping.</strong> Proving Ground finds <code>[Tune]</code> fields and <code>[DebugAction]</code> methods by reflection. In IL2CPP builds at every managed stripping level up to High, they were kept, including a <code>[DebugAction]</code> method nothing else calls. No <code>link.xml</code> is needed.</p>
+<p><strong>What ships.</strong> The package's runtime assembly (<code>Exaweft.Proving.dll</code>) is in every build, because game code refers to it; the Editor and test assemblies never are.</p>
+<h2 id="10-what-has-been-tested">10. What has been tested</h2>
+<div class="table"><table><thead><tr><th></th><th>Tested</th></tr></thead><tbody>
+<tr><td>Unity</td><td>6000.0.85f2 and 6000.5.9f1. Other Unity 6 releases between them are expected to work but weren't tested.</td></tr>
+<tr><td>Editor</td><td>Windows 11</td></tr>
+<tr><td>Players</td><td>Windows 64-bit standalone: Mono (6000.0 and 6000.5) and IL2CPP (6000.5, default and High stripping); development, release and playtest builds</td></tr>
+<tr><td>Render pipelines</td><td>Built-in, URP and HDRP (6000.5)</td></tr>
+<tr><td>Input</td><td>The Input System package, the legacy Input Manager, and both together</td></tr>
+<tr><td>Games</td><td>Five existing projects, from a 2D platformer to a festival-management game, besides the sample</td></tr>
+</tbody></table></div>
+<p>Not tested: macOS and Linux Editors; macOS, Linux, mobile, console, WebGL and XR players; IL2CPP on 6000.0. They may work, but nothing is claimed for them.</p>
+<h2 id="11-known-limitations">11. Known limitations</h2>
+<ul>
+<li><strong>Supported field types</strong> are <code>float</code>, <code>int</code>, <code>bool</code> and enums (not <code>[Flags]</code>), in fields or auto-properties with a setter, directly or up to four structs or classes deep. Arrays, lists and other collections can't be tuned, so a list of per-level stats isn't reachable; nor can <code>static</code>, <code>readonly</code>, <code>double</code>, <code>long</code>, <code>string</code>, vector or colour fields. Unsupported fields are skipped with a Console warning.</li>
+<li><strong>One value per field per type.</strong> Objects of one type share a value unless registered with a scope (section 2).</li>
+<li><strong>Values copied at start-up</strong> don't follow tuning until the game reads the field again (section 2).</li>
+<li><strong>Game input isn't blocked for you.</strong> Your game decides when to ignore input meant for the panels (section 8).</li>
+<li><strong>The comparison</strong> shows means and ranges per label, not round-by-round differences or statistical tests (section 6).</li>
+<li><strong>Changes aren't written into scenes or prefabs.</strong> Save presets, and copy the values you choose into your project.</li>
+<li><strong>Panels draw above the game's UI Toolkit UI but below <code>OnGUI</code></strong> (IMGUI) text, which Unity always draws last.</li>
+<li><strong>Unity 6000.0 players</strong> log &quot;No Theme Style Sheet set to PanelSettings&quot; once when the panels first open. The panels draw correctly; Unity 6000.5 doesn't log it.</li>
+<li><strong>Off in release builds</strong>, unless a playtest build opts in (section 9).</li>
+</ul>
+<h2 id="12-the-basics-sample-and-the-package-s-tests">12. The Basics sample and the package's tests</h2>
+<p><strong>The sample.</strong> In the Package Manager, select Proving Ground, open <strong>Samples</strong> and import <strong>Basics</strong>. Open its <code>Basics</code> scene and press Play; everything is built from plain shapes in code, and it reads no input of its own, so it works with either input system and any render pipeline.</p>
+<ul>
+<li><strong>F1, Showcase:</strong> a ring of shapes. Tune their speed, count, height, size, shape and colours; the buttons log an event, reverse the direction and pick new colours.</li>
+<li><strong>F1, Runner:</strong> press <strong>Run scripted batch (3 + 3)</strong>. A runner laps the ring three times under each of two presets, &quot;Basics Steady&quot; and &quot;Basics Twitchy&quot; (made the first time), using <code>RunBatch</code>, then the comparison opens with the six laps selected: Twitchy is faster but stumbles; see whether that pays. <strong>Run one lap</strong> records a lap with the current values.</li>
+<li><strong>F2:</strong> counters (laps, stumbles), a timer and events from both.</li>
+</ul>
+<p><strong>The package's tests.</strong> The package includes its EditMode tests. To run them, add the package to the <code>testables</code> list in your project's <code>Packages/manifest.json</code>, then open <strong>Window › General › Test Runner</strong>:</p>
+<pre><code class="language-json">&quot;testables&quot;: [ &quot;com.exaweft.provingground&quot; ]</code></pre>
+<p>The tests use temporary folders and never touch your presets, runs or <code>PlayerPrefs</code>. Without that entry they aren't compiled, and they are never part of a build.</p>
+<footer>Proving Ground 1.0.0 by Exaweft. Built from the documentation included in the package.</footer>
+</main>
+</div>
+</body>
+</html>

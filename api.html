@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API overview · Proving Ground</title>
+<meta name="description" content="Proving Ground for Unity 6: live gameplay tuning, diagnostics and run comparison, by Exaweft.">
+<style>
+:root { --bg:#ffffff; --surface:#f4f7f9; --text:#16212b; --muted:#566673; --border:#d9e2e8; --accent:#0f8a66;
+  --code-bg:#f0f4f7; --pre-bg:#111f2b; --pre-text:#e6edf3; }
+@media (prefers-color-scheme: dark) { :root { --bg:#0b151f; --surface:#111f2b; --text:#e6edf3; --muted:#9db0bb;
+  --border:#26394a; --accent:#56e4b1; --code-bg:#172a3a; --pre-bg:#111f2b; --pre-text:#e6edf3; } }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+header { border-bottom:1px solid var(--border); background:var(--surface); }
+.bar { max-width:1180px; margin:0 auto; padding:12px 16px; display:flex; flex-wrap:wrap; gap:8px 24px; align-items:baseline; }
+.brand { font-weight:700; color:var(--accent); text-decoration:none; font-size:18px; }
+.brand span { color:var(--muted); font-weight:400; font-size:14px; margin-left:6px; }
+nav.top a { color:var(--text); text-decoration:none; margin-right:16px; }
+nav.top a[aria-current] { color:var(--accent); font-weight:600; }
+.layout { max-width:1180px; margin:0 auto; padding:0 16px; display:grid; grid-template-columns:240px minmax(0,1fr); gap:40px; }
+aside { position:sticky; top:0; align-self:start; max-height:100vh; overflow:auto; padding:24px 0; font-size:14px; }
+aside a { display:block; color:var(--muted); text-decoration:none; padding:3px 0; }
+aside a:hover { color:var(--accent); }
+main { padding:8px 0 64px; min-width:0; }
+h1 { font-size:32px; line-height:1.2; margin:28px 0 16px; }
+h2 { font-size:24px; margin:40px 0 12px; padding-top:8px; border-top:1px solid var(--border); }
+h3 { font-size:19px; margin:28px 0 8px; }
+a { color:var(--accent); }
+code { font:14px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; background:var(--code-bg); padding:1px 5px; border-radius:4px; }
+pre { background:var(--pre-bg); color:var(--pre-text); padding:14px 16px; border-radius:6px; overflow-x:auto; }
+pre code { background:none; padding:0; color:inherit; }
+.table { overflow-x:auto; margin:16px 0; }
+table { border-collapse:collapse; width:100%; font-size:15px; }
+th, td { text-align:left; vertical-align:top; padding:7px 10px; border-bottom:1px solid var(--border); }
+th { background:var(--surface); }
+li { margin:4px 0; }
+footer { color:var(--muted); font-size:13px; border-top:1px solid var(--border); padding:16px 0; margin-top:48px; }
+@media (max-width:820px) { .layout { grid-template-columns:1fr; gap:0; } aside { position:static; max-height:none; padding:12px 0 0; } }
+</style>
+</head>
+<body>
+<header><div class="bar"><a class="brand" href="index.html">Proving Ground<span>1.0.0 · Exaweft</span></a>
+<nav class="top"><a href="index.html">User guide</a><a href="api.html" aria-current="page">API overview</a><a href="changelog.html">Changelog</a></nav></div></header>
+<div class="layout">
+<aside aria-label="On this page"><a href="#entry-point-provingground">Entry point: <code>ProvingGround</code></a>
+<a href="#attributes">Attributes</a>
+<a href="#tuning-tuningregistry-and-tunedvalue">Tuning: <code>TuningRegistry</code> and <code>TunedValue</code></a>
+<a href="#presets-presetlibrary">Presets: <code>PresetLibrary</code></a>
+<a href="#panels-tuningpanel-f1-and-diagnosticspanel-f2">Panels: <code>TuningPanel</code> (F1) and <code>DiagnosticsPanel</code> (F2)</a>
+<a href="#diagnostics-diag-and-diagnosticssession">Diagnostics: <code>Diag</code> and <code>DiagnosticsSession</code></a>
+<a href="#runs-runrecorder-runrecord-and-runcomparison">Runs: <code>RunRecorder</code>, <code>RunRecord</code> and <code>RunComparison</code></a></aside>
+<main>
+<h1 id="proving-ground-api-overview">Proving Ground API overview</h1>
+<p>Everything is in the <code>Exaweft.Proving</code> namespace. This page lists the public API by job; each type and member has XML documentation with the details, shown by your IDE. The user guide (<code>index.md</code>) explains how the parts fit together.</p>
+<h2 id="entry-point-provingground">Entry point: <code>ProvingGround</code></h2>
+<div class="table"><table><thead><tr><th>Member</th><th>What it does</th></tr></thead><tbody>
+<tr><td><code>Register(object owner)</code>, <code>Register(object owner, string scope)</code></td><td>Adds an object's <code>[Tune]</code> fields and <code>[DebugAction]</code> methods. Returns the number of values found (0 when off). A scope gives the object values of its own</td></tr>
+<tr><td><code>Unregister(object owner)</code></td><td>Removes it; its values are remembered for the next object of its type this session</td></tr>
+<tr><td><code>Tuning</code></td><td>The <code>TuningRegistry</code>: every tuned value and action</td></tr>
+<tr><td><code>Presets</code></td><td>The <code>PresetLibrary</code>: named sets of values</td></tr>
+<tr><td><code>Panel</code></td><td>The <code>TuningPanel</code> (F1)</td></tr>
+<tr><td><code>DiagnosticsPanel</code></td><td>The <code>DiagnosticsPanel</code> (F2) and the run comparison</td></tr>
+<tr><td><code>Diagnostics</code></td><td>The <code>DiagnosticsSession</code>: counters, timers, events, performance and the log</td></tr>
+<tr><td><code>Runs</code></td><td>The <code>RunRecorder</code>: run records</td></tr>
+<tr><td><code>IsEnabled</code></td><td>False in release builds (unless <code>PROVING_GROUND_PLAYTEST</code>), or everywhere with <code>PROVING_GROUND_OFF</code></td></tr>
+<tr><td><code>IsPointerOverPanels</code></td><td>True while the pointer is over either panel or the comparison</td></tr>
+<tr><td><code>FreeCursorWhileOpen</code></td><td>Frees a locked or hidden cursor while a panel is open. Off by default</td></tr>
+<tr><td><code>Version</code>, <code>ProductName</code>, <code>Publisher</code>, <code>PlaytestDefine</code>, <code>OffDefine</code></td><td>Constants</td></tr>
+</tbody></table></div>
+<h2 id="attributes">Attributes</h2>
+<div class="table"><table><thead><tr><th>Attribute</th><th>Use</th></tr></thead><tbody>
+<tr><td><code>[Tune(group, min, max, step, hint, label)]</code>, <code>[Tune(group, hint, label)]</code></td><td>On a <code>float</code>, <code>int</code>, <code>bool</code> or enum field (or <code>[field: Tune]</code> on an auto-property), or on a field holding a struct or class with tuned fields inside</td></tr>
+<tr><td><code>[DebugAction(group, label, hint)]</code></td><td>On a method with no parameters: a button in the F1 panel</td></tr>
+</tbody></table></div>
+<h2 id="tuning-tuningregistry-and-tunedvalue">Tuning: <code>TuningRegistry</code> and <code>TunedValue</code></h2>
+<p><code>TuningRegistry</code>: <code>Values</code>, <code>Actions</code>, <code>Find(key)</code>, <code>FindAction(key)</code>, <code>ResetAll()</code>, <code>ResetGroup(group)</code>, <code>IsRegistered(owner)</code>, <code>RegisteredCount</code>, and the events <code>ValueChanged</code> (a value changed through Proving Ground) and <code>RegistrationChanged</code>. <code>DefaultGroup</code> is &quot;General&quot;.</p>
+<p><code>TunedValue</code>, one per tuned field (per scope):</p>
+<ul>
+<li>Identity: <code>Key</code> (such as <code>MyGame.Player.speed</code>), <code>Group</code>, <code>Scope</code>, <code>Label</code>, <code>Hint</code>, <code>Kind</code> (<code>TuneKind.Float</code>, <code>Int</code>, <code>Bool</code>, <code>Enum</code>), <code>FieldType</code>.</li>
+<li>Range: <code>HasRange</code>, <code>Min</code>, <code>Max</code>, <code>Step</code>, <code>Options</code> (an enum's names).</li>
+<li>Value: <code>Value</code> (as a double; setting it clamps and snaps, and applies to every registered object), <code>BoolValue</code>, <code>ValueText</code>, <code>TrySetText(text)</code>, <code>Default</code>, <code>DefaultText</code>, <code>IsDefault</code>, <code>Reset()</code>, <code>Clamp(v)</code>, <code>Snap(v)</code>.</li>
+<li>Targets: <code>IsActive</code>, <code>TargetCount</code>.</li>
+</ul>
+<p><code>DebugAction</code>: <code>Key</code>, <code>Group</code>, <code>Scope</code>, <code>Label</code>, <code>Hint</code>, <code>IsActive</code>, <code>TargetCount</code>, <code>Invoke()</code> (returns how many objects it ran on).</p>
+<h2 id="presets-presetlibrary">Presets: <code>PresetLibrary</code></h2>
+<p><code>Save(name, out message)</code>, <code>Load(name, out message)</code>, <code>Delete(name, out message)</code>, <code>Exists(name)</code>, <code>List()</code>, <code>IsValidName(name)</code>, <code>PathFor(name)</code>, <code>Directory</code>, <code>CurrentName</code>, and the limits <code>MaxNameLength</code> (64) and <code>MaxFileBytes</code>. Each call returns false with a message when it doesn't succeed, and changes nothing.</p>
+<h2 id="panels-tuningpanel-f1-and-diagnosticspanel-f2">Panels: <code>TuningPanel</code> (F1) and <code>DiagnosticsPanel</code> (F2)</h2>
+<p>Both: <code>Open()</code>, <code>Close()</code>, <code>Toggle()</code>, <code>IsOpen</code>, <code>OpenChanged</code>, <code>ToggleKey</code> (<code>KeyCode.None</code> turns the hotkey off), <code>IsPointerOverPanel</code>, <code>Placement</code>, <code>DefaultPlacement</code> and <code>ForgetPlacement()</code>.</p>
+<ul>
+<li><code>TuningPanel</code> also has <code>Title</code>, <code>Scale</code> (<code>MinScale</code> to <code>MaxScale</code>, shared by both panels), <code>IsTyping</code> (any Proving Ground text box has the keyboard) and <code>ReleaseKeyboard()</code>. Its placement is a <code>PanelPlacement</code>: <code>Left</code>, <code>Right</code> or <code>Floating</code>.</li>
+<li><code>DiagnosticsPanel</code>'s placement is a <code>DiagnosticsPlacement</code>: <code>OppositeTuning</code> (the default), <code>Left</code> or <code>Right</code>. It also has the run comparison: <code>OpenComparison()</code>, <code>OpenComparison(selectLatestBatch)</code> (opens it with the latest batch selected), <code>CloseComparison()</code>, <code>IsComparisonOpen</code>, <code>ComparisonChanged</code> and <code>ComparisonTextSize</code>.</li>
+</ul>
+<p>A placement set from code or chosen with a panel's buttons is remembered in <code>PlayerPrefs</code> and wins over <code>DefaultPlacement</code>, which isn't saved.</p>
+<h2 id="diagnostics-diag-and-diagnosticssession">Diagnostics: <code>Diag</code> and <code>DiagnosticsSession</code></h2>
+<p><code>Diag</code> is the short form for game code: <code>Event(message)</code>, <code>Count(name, amount = 1)</code>, <code>Timer(name)</code> (returns a <code>DiagTimer</code> to dispose, usually with <code>using</code>) and <code>MarkAutomated(bool)</code>.</p>
+<p><code>DiagnosticsSession</code> (<code>ProvingGround.Diagnostics</code>): <code>Counters</code> (<code>DiagCounter</code>: <code>Name</code>, <code>Value</code>), <code>Timers</code> (<code>DiagTimerStats</code>: <code>Name</code>, <code>Count</code>, <code>Total</code>, <code>Mean</code>, <code>Min</code>, <code>Max</code>, <code>Last</code>), <code>RecentEvents</code> (<code>DiagEvent</code>: <code>Time</code>, <code>Message</code>), <code>FindCounter</code>, <code>FindTimer</code>, <code>EventCount</code>, <code>Performance</code>, <code>Summary()</code>, <code>CopySummary()</code>, <code>OpenLogFolder(out message)</code>, <code>LogDirectory</code>, <code>LogFilePrefix</code>, <code>LogFolder</code>, <code>LogFile</code>, <code>LogStatus</code>, <code>Kind</code> (<code>DiagnosticsSessionKind.Playtest</code> or <code>Automated</code>), <code>Id</code>, <code>StartedUtc</code>, <code>Elapsed</code>.</p>
+<p><code>PerformanceMonitor</code> (<code>Diagnostics.Performance</code>): <code>CurrentFps</code>, <code>AverageFps</code>, <code>MeanFrameMs</code>, <code>P95FrameMs</code>, <code>MaxFrameMs</code>, <code>Frames</code>, memory (<code>ManagedHeapBytes</code>, allocated bytes at start, last and peak), <code>Collections</code>, pauses (<code>Pauses</code>, <code>PausedSeconds</code>, <code>LongestPauseSeconds</code>) and <code>Summary()</code>.</p>
+<h2 id="runs-runrecorder-runrecord-and-runcomparison">Runs: <code>RunRecorder</code>, <code>RunRecord</code> and <code>RunComparison</code></h2>
+<p><code>RunRecorder</code> (<code>ProvingGround.Runs</code>): <code>Start(label, preset)</code> (false if it couldn't start, such as a preset that didn't load), <code>End(outcome)</code> (returns the saved record), <code>BeginBatch(name)</code>, <code>EndBatch()</code>, <code>LoadAll()</code> (newest first), <code>IsRunning</code>, <code>CurrentId</code>, <code>CurrentLabel</code>, <code>Elapsed</code>, <code>Batch</code>, <code>LastRun</code>, <code>LastMessage</code>, <code>AutoStartOnSceneLoad</code>, <code>Directory</code>, <code>Folder</code>.</p>
+<p><code>RunRecord</code>, one saved run: <code>Id</code>, <code>Label</code>, <code>Batch</code>, <code>Preset</code>, <code>PresetModified</code>, <code>StartedBy</code>, <code>Outcome</code>, <code>StartedUtc</code>, <code>Duration</code>, <code>SettingsAtStart</code>, <code>SettingsAtEnd</code>, <code>SettingAtStart(key)</code>, <code>Changes</code>, <code>Counters</code>, <code>CounterValue(name)</code>, <code>Timers</code>, <code>Events</code>, <code>Performance</code>, and the build identity (<code>Build</code>, <code>UnityVersion</code>, <code>Platform</code>, <code>Scene</code>, <code>Kind</code>, <code>SessionId</code>). Its entries are <code>RunSetting</code>, <code>RunChange</code>, <code>RunCount</code>, <code>RunTiming</code>, <code>RunEvent</code> and <code>RunPerformance</code>. <code>FormatVersion</code> is the JSON format's version.</p>
+<p><code>RunComparison.Compare(records)</code>: <code>Groups</code> (one <code>RunGroup</code> per label: <code>Label</code>, <code>Runs</code>, <code>Presets</code>, <code>Batches</code>), <code>Outcomes</code> and <code>Settings</code> (rows of <code>RunComparisonRow</code>: <code>Name</code>, <code>Cells</code>, <code>Stats</code> with each group's <code>Mean</code>, <code>Min</code>, <code>Max</code> and <code>Runs</code>), <code>RunCount</code>, <code>SameSettings</code>, and <code>ToText()</code>.</p>
+<footer>Proving Ground 1.0.0 by Exaweft. Built from the documentation included in the package.</footer>
+</main>
+</div>
+</body>
+</html>
