@@ -54,7 +54,8 @@ footer { color:var(--muted); font-size:13px; border-top:1px solid var(--border);
 <a href="#9-release-builds-and-performance">9. Release builds and performance</a>
 <a href="#10-what-has-been-tested">10. What has been tested</a>
 <a href="#11-known-limitations">11. Known limitations</a>
-<a href="#12-the-basics-sample">12. The Basics sample</a></aside>
+<a href="#12-the-basics-sample">12. The Basics sample</a>
+<a href="#support">Support</a></aside>
 <main>
 <h1 id="proving-ground-user-guide">Proving Ground user guide</h1>
 <p>Proving Ground lets you tune gameplay values while the game runs, keep the numbers you like as presets, and record runs so you can compare which settings played best. It works in the Editor's Play Mode and in development builds, and is off in release builds.</p>
@@ -330,7 +331,15 @@ if (!panels &amp;&amp; Input.GetMouseButtonDown(0)) Cursor.lockState = CursorLoc
 <li><strong>F1, Runner:</strong> press <strong>Run scripted batch (3 + 3)</strong>. A runner laps the ring three times under each of two presets, &quot;Basics Steady&quot; and &quot;Basics Twitchy&quot; (made the first time), using <code>RunBatch</code>, then the comparison opens with the six laps selected: Twitchy is faster but stumbles; see whether that pays. <strong>Run one lap</strong> records a lap with the current values.</li>
 <li><strong>F2:</strong> counters (laps, stumbles), a timer and events from both.</li>
 </ul>
-<footer>Proving Ground 1.0.0 by Exaweft. Built from the documentation included in the package.</footer>
+<h2 id="support">Support</h2>
+<p>Email <a href="mailto:support@exaweft.com">support@exaweft.com</a>. To help us answer quickly, please include:</p>
+<ul>
+<li>your Unity version and render pipeline (Built-in, URP or HDRP);</li>
+<li>your input setup: Input System, Input Manager or both (Project Settings › Player › Other Settings › Active Input Handling);</li>
+<li>the full Console error with its stack trace, if there is one;</li>
+<li>the diagnostics summary: press F2, click <strong>Copy summary</strong>, and paste it into the email.</li>
+</ul>
+<footer>Proving Ground 1.0.0 by Exaweft. Support: <a href="mailto:support@exaweft.com">support@exaweft.com</a></footer>
 </main>
 </div>
 </body>
